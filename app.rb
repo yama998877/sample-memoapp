@@ -137,16 +137,13 @@ end
 get '/new/:file' do
   p params[:file]
   p 'aaaaaaaaaaaa'
+  erb :new_detail
 end
 
 not_found do
   '404 Not Found'
 end
 
-new_page = '/new'
-#   erb :new
-# get new_page  do
-# end
 get '/about' do
 
 erb :about
