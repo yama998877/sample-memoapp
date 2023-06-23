@@ -1,1 +1,14 @@
+<form action="/" method="POST">
 
+  <input type="hidden" name="_method" value="PATCH"/> 
+  
+  タイトル:<input type="text" name="title" value="<%= @memo['title'] %>">
+
+  <div>
+  メモ:
+  <textarea name="detail" rows="5"><%= @memo['detail'] %></textarea>
+  </div>
+
+  <input type="submit" value="変更">
+  
+  </form>
