@@ -105,6 +105,12 @@ post '/' do
   erb :index
 end
 
+patch '/' do
+  p params['title']
+  p params['detail']
+  redirect '/'
+end
+
 get '/new' do
   erb :new
 end
@@ -136,7 +142,9 @@ end
 
 get '/new/:file' do
   p params[:file]
-  p 'aaaaaaaaaaaa'
+  p @memo = JSON.parse(File.read("./database/#{params[:file]}"))
+  p @memo['title']
+  p @memo['detail']
   erb :new_detail
 end
 
