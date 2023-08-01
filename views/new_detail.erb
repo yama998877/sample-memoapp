@@ -1,6 +1,7 @@
 <form action="/" method="POST">
 
-  <input type="hidden" name="_method" value="PATCH"/> 
+  <input type="hidden" name="_method" value="PATCH"/>
+  <input type='hidden' name='json' value=<%= @file_name %>>
   
   タイトル:<input type="text" name="title" value="<%= @memo['title'] %>">
 
