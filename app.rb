@@ -1,8 +1,8 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
-require 'pp'
 require 'securerandom'
+require 'rack/utils'
 set :enviroment, :production
 
 # def store_name(filename, title, datail)
@@ -11,36 +11,34 @@ set :enviroment, :production
 #   end
 # end
 
-def store_name(filename, title, detail)
-  File.open(filename, 'a+') do |file|
-    file.puts(title, detail)
+helpers do
+  def h(text)
+    Rack::Utils.escape_html(text)
   end
-  
 end
 
-def store_name2(filename, data)
-  File.open(filename, 'a+') do |file|
+def save_memo(filename, data)
+  File.open(filename, 'w') do |file|
     file.puts(data)
   end
   File.open(filename).close
 end
 
-def read_names
-  return [] unless Dir.exist?('database')
+def read_memo
+# ファイルがあるか確認して一覧表示する
+  return [] unless Dir.exist?('./database')
 
   Dir.open('./database').each_child do |f|
     File.read("./database/#{f}").split
   end
-  
 end
 
 get '/' do
-  params
-  @title = params['title']
-  @detail = params['detail']
-  @names = read_names
+  print "\e[32m"
+  print "\e[0m"
+
   json_files = []
-  @memo_path = Dir.children('./database/').sort_by{ |f| File.mtime("./database/#{f}") }
+  @memo_path = Dir.children('./database/').sort_by { |f| File.mtime("./database/#{f}") }
   @memo_path.each do |file|
     json_files << File.read("./database/#{file}")
   end
@@ -52,81 +50,58 @@ get '/' do
 
   @titles = []
   hashs.each do |t|
-    @titles << t['title']
+    @titles << h(t['title'])
   end
-  p @url_titles = @memo_path.zip(@titles)
-  # store_name('names.txt', @email, @message)
+  p @url_titles = @memo_path.zip(@titles) # URLとメモのタイトルを同じ配列に入れる
   erb :index
 end
 
 post '/' do
+  print "\e[32m"
   p params['test']
-  # p "#{SecureRandom.uuid}.json"
-  params
-  JSON.dump(params)
-  params.to_json.class
-  @title = params['title']
-  @detail = params['detail']
-  store_name2("./database/#{SecureRandom.uuid}.json", params.to_json)
-  @names = read_names
-  pp @names
+  p params
+
+  p JSON.dump(params)
+  p '------------'
+  p h(params).to_json
+  p h(params)
+  p
+  p params.to_json
+  p @title = params['title'].class
+  p @detail = params['detail']
+  save_memo("./database/#{SecureRandom.uuid}.json", h(params).to_json)
+  @names = read_memo
   @memo_path = Dir.children('./database/').sort_by{ |f| File.mtime("./database/#{f}") }
-  #test----------
-
-  json_files = []
-  @memo_path.each do |file|
-    json_files << File.read("./database/#{file}")
-  end
-
-  hashs = []
-  json_files.each do |json|
-    hashs << JSON.parse(json)
-  end
-
-  @titles = []
-  hashs.each do |t|
-    @titles << t['title']
-  end
-  p @url_titles = @memo_path.zip(@titles)
-  # @memo_path.each do |file|
-  #   @titles << file
-  #   hashs.each do |t|
-  #     @titles << t['title']
-  #   end
-  # end
-  # p @titles
-  # hashs.each do |t|
-  #   @titles << t['title']
-  #   @memo_path.each do |file|
-  #     @titles << file
-  #   end
-  # end
+  print "\e[0m"
   redirect '/'
   erb :index
 end
 
 patch '/' do
+  p params
   p params['title']
   p params['detail']
+  p params['json']
+  p params.slice('title', 'detail').to_json
+  p update_file = params['json']
+  p changing_content = params.slice('title', 'detail').to_json
+  save_memo("./database/#{update_file}", changing_content)
+
+  redirect '/'
+end
+
+delete '/' do
+  print "\e[31m"
+  p params
+  p delete_file = params['json']
+  p File.delete("./database/#{delete_file}")
+  p '削除しました！削除しました！'
+  print "\e[0m"
   redirect '/'
 end
 
 get '/new' do
   erb :new
-end
-
-get '/monstas' do
-  p params
-  p @name = params['name']
-  p @names = read_names
-  # store_name('names.txt', @name, @test)
-  erb :monstas
-end
-
-post '/monstas' do
-  p @name = params['name']
-  # store_name('public/names.txt', @name, @test)
-  redirect "/monstas?name=#{@name}"
 end
 
 get '/:file' do
@@ -136,13 +111,12 @@ get '/:file' do
     p @memo_detail = JSON.parse(File.read("./database/#{@json_file}"))
     p @memo_detail['title']
     p @memo_detail['detail'].gsub(/\r\n/, '<br>')
-  
   erb :detail
 end
 
 get '/new/:file' do
-  p params[:file]
-  p @memo = JSON.parse(File.read("./database/#{params[:file]}"))
+  p @file_name = params[:file]
+  p @memo = JSON.parse(File.read("./database/#{@file_name}"))
   p @memo['title']
   p @memo['detail']
   erb :new_detail
@@ -151,20 +125,3 @@ end
 not_found do
   '404 Not Found'
 end
-
-get '/about' do
-
-erb :about
-end
-post '/confirm' do
-
-  @email = params[:email]
-  @message = params[:message]
-  @name = params[:name]
-  p params
-  p @email
-  p @message
-  erb :confirm
-end
-
-
