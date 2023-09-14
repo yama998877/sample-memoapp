@@ -2,20 +2,14 @@
 
 <br>
 <%= @memo_detail['detail'].gsub(/\r\n/, '<br>') %>
-
-
-
 <br><br>
 <a href="/new/<%= @json_file %>">変更</a>
 <form action="/" method="POST">
-  
-  <input type="hidden" name="_method" value="delete"/>
 
-  <input type='hidden' name='json' value=<%= @json_file %>>
+  <input type="hidden" name="_method" value="delete">
 
+  <input type='hidden' name='json' value='<%= @json_file %>'>
 
   <input type="submit" value="削除">
-  
-  </form>
 
-
+</form>
