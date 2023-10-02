@@ -31,7 +31,6 @@ end
 
 get '/' do
   json_files = []
-  # @memo_path = Dir.children('./data/').sort_by { |f| File.mtime("./data/#{f}") }
   @memo_path = Dir.glob('./data/*.json').sort_by { |f| File.mtime(f) }
   @memo_path.each do |file|
     p json_files << File.read(file)
@@ -87,11 +86,9 @@ get '/new' do
 end
 
 get '/data/:file' do
-  p '----------------------------'
-  p @json_file = params[:file]
-  # Dir.glob('./data/*.json').include?(@json_file)
-  @json_file.to_json
-  p @memo_detail = JSON.parse(File.read("./data/#{@json_file}"))
+  @json_file = params[:file]
+
+  @memo_detail = JSON.parse(File.read("./data/#{@json_file}"))
   @memo_detail['title']
   erb :detail
 end
