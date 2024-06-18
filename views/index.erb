@@ -1,9 +1,15 @@
 
 <p>
-  <a href="new">新規作成</a>
+  <a href="memos/new">新規作成</a>
   <ul>
-    <% @url_titles.each do |x,link| %>
-    <li><a name='test' href="<%= x %>"><%= link %></a></li>
+    <% read_memos.each do |link,memo| %>
+    <li><a href="memos/<%= File.basename("#{link}") %>">
+      <% if memo[:title].strip.empty? %>
+        <span style="color: #CCC;">「タイトルがありません」</span>
+      <% else %>
+        <%= h(memo[:title]) %>
+      <% end %>
+    </a></li>
     <% end %>
   <ul>
 </p>

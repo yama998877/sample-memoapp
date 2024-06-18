@@ -107,8 +107,8 @@ PLATFORMS
   arm64-darwin-20
 
 DEPENDENCIES
-  erb_lint (~> 0.4.0)
-  rubocop-fjord (~> 0.3.0)
+  erb_lint
+  rubocop-fjord
   sinatra
   sinatra-contrib
   webrick
