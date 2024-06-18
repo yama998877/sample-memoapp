@@ -1,13 +1,17 @@
-# memoapp
-
-## メモアプリ
+# メモアプリ
 
 メモを保存、更新、削除することができます。
 
 ## ダウンロード方法
 
 ```zsh
-git clone url(後で入力)
+git clone https://github.com/yama998877/practice-memoapp
+```
+
+## 必要なGemのインストール
+
+```ruby
+  bundle update
 ```
 
 ## 起動方法
