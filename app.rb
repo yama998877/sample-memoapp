@@ -22,7 +22,7 @@ def read_memos(memo_id = 'id,title,detail')
     memos = {}
     CONN.exec("SELECT #{memo_id} FROM memos") do |result|
       result.each do |row|
-        memo = { title: row['title'], detail: row['detail']}
+        memo = { title: row['title'], detail: row['detail'] }
         uuid = row['id']
         memos[uuid] = memo
       end
