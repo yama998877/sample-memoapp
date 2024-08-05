@@ -11,7 +11,23 @@ git clone https://github.com/yama998877/practice-memoapp
 ## 必要なGemのインストール
 
 ```ruby
-  bundle update
+  bundle install
+```
+
+## データベース作成
+
+```sql
+CREATE DATABASE memoapp;
+```
+
+## テーブルの作成
+
+```sql
+CREATE TABLE memos ( 
+  id UUID PRIMARY KEY,
+  title VARCHAR(255),
+  detail TEXT,
+  update_at timestamp );
 ```
 
 ## 起動方法
